@@ -1,8 +1,4 @@
-import std.math;
-import std.stdio;
-import std.algorithm;
-import std.range;
-import std.array;
+import std.math, std.stdio, std.algorithm, std.range, std.array;
 
 version ( none){
 	pure ulong nCr(ulong n, ulong r){
@@ -21,23 +17,29 @@ version ( none){
 		if ( n < r){
 			/+screw you!+/
 			return 0;
-		}else if ( r == 1 ){
-			return 1;
 		}
-		ulong[][] pascal_rectangle = minimallyInitializedArray!(ulong[][])(n+1, r+1);
+		ulong[][] pascal_rectangle = minimallyInitializedArray!(ulong[][])(n+1-r, r+1);
 		
 		foreach( ref ulong it ; pascal_rectangle[0]){
 			it = 1;
 		}
-		foreach( ref ulong it[] ; pascal_retangle ){
+		foreach( ref ulong it[] ; pascal_rectangle ){
 			it[0] = 1;
 		}
-		foreach(
-		return 0;
+		for( ulong i = 1 ; i <  pascal_rectangle.length ; i++){
+			for ( ulong j = 1 ; j < pascal_rectangle[i].length ; j++){
+				pascal_rectangle[i][j] = pascal_rectangle[i-1][j] + pascal_rectangle[i][j-1] ;
+			}
+		}
+		return pascal_rectangle[n-r][r];
 	}
 
 
 unittest{
+	foreach ( ulong i ; 1..7){
+		writeln(nCr(7,i));
+	}
+
 	assert( 20 == nCr(6, 3));
 }
 
@@ -46,7 +48,7 @@ double binomial(ulong n, ulong k, double p){
 }
 
 double cumulative_binomial(ulong n, ulong k, double p){
-	return reduce!( "a + b")(0.0, map!( a => binomial(n, a, p) )( iota( 1, k+1) ));
+	return reduce!( "a + b")(0.0, map!( a => binomial(n, a, p) )( iota( 0, k+1) ));
 }
 
 unittest{
